@@ -20,7 +20,7 @@
    This creates a commit with your changes to the files you've added.
 6. `git checkout master`
 
-	This changes which branch you're looking at to master in your local version of the repository -- any changes you've committed to myCoolStuff will disappear from the file system (but will reappear when you checkout sree).
+	This changes which branch you're looking at to master in your local version of the repository -- any changes you've committed to sree will disappear from the file system (but will reappear when you checkout sree).
 7. `git pull`
 
 	 This updates your master branch with any changes that other people have pushed -- we need to do this again because people may have changed things while you were working.
