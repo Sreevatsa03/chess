@@ -1,8 +1,8 @@
 import chess
 import chess.pgn
 import time
-import randomMover as player1
-import randomMover as player2
+import smartMover as player1
+import smartMover as player2
 
 game = chess.pgn.Game()
 node = game
