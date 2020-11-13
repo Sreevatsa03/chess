@@ -121,9 +121,6 @@ class Player:
             return -eval
 
     def minimax(self, board, isMax, depth, alpha, beta):
-        if board.is_checkmate():
-            return -40 if isMax else 40
-
         if depth == 0:
             return self.evaluation(board)
 
