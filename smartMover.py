@@ -3,25 +3,23 @@ import chess
 import time
 
 class Player:
-    board = chess.Board()
 
+    board = chess.Board()
     def __init__(self, board, color, time):
         pass
     
     def move(self, board, time):
-        minValue = float("inf")
-        minMove = None
+        maxScore, bestMove = float("-inf"), None
         for move in board.legal_moves:
             copyBoard = board.copy()
             copyBoard.push(move)
-            value = minimax(copyBoard, 2, float("-inf"), float("inf"), False)
+            score = self.minimax(board, True, 1, float("-inf"), float("inf"))
+            if score >= maxScore:
+                maxScore = score
+                bestMove = move
+        return bestMove
 
-            if value < minValue:
-                minValue = value
-                minMove = move
-
-
-def evaluation(board):
+    def evaluation(self, board):
         P = 100
         N = 320
         B = 330
@@ -47,37 +45,33 @@ def evaluation(board):
             if board.turn:
                 return eval
             return -eval
-    
-def minimax(board, depth, alpha, beta, isMax):
-    if board.is_checkmate():
-        return -40 if isMax else 40
-    elif board.is_game_over():
-        return 0
 
-    if depth == 0:
-        return evaluation(board)
+    def minimax(self, board, isMax, depth, alpha, beta):
+        if board.is_checkmate():
+            return -40 if isMax else 40
 
-    if isMax:
-        bestValue = float("-inf")
-        for move in board.legal_moves:
-            copyBoard = board.copy()
-            copyBoard.push(move)
-            value = minimax(copyBoard, depth, alpha, beta, False)
-            bestValue = max(bestValue, value)
-            alpha = max(alpha, bestValue)
-            if alpha >= beta:
-                break
-        return bestValue
-    else:
-        bestValue = float("inf")
-        for move in board.legal_moves:
-            copyBoard = board.copy()
-            copyBoard.push(move)
-            value = minimax(copyBoard, depth - 1, alpha, beta, True)
-            bestValue = min(bestValue, value)
-            beta = min(beta, bestValue)
-            if alpha >= beta:
-                break
-        return bestValue
+        if depth == 0:
+            return self.evaluation(board)
 
-    return 0
+        if isMax:
+            maxScore, bestMove = float("-inf"), None
+            for move in board.legal_moves:
+                copyBoard = board.copy()
+                copyBoard.push(move)
+                score = self.minimax(copyBoard, not isMax, depth - 1, alpha, beta)
+                maxScore = max(score, maxScore)
+                alpha = max(alpha, score)
+                if beta <= alpha:
+                    break
+            return maxScore
+        else: 
+            minScore, bestMove = float("inf"), None
+            for move in board.legal_moves:
+                copyBoard = board.copy()
+                copyBoard.push(move)
+                score = self.minimax(copyBoard, isMax, depth - 1, alpha, beta)
+                minScore = min(score, minScore)
+                beta = min(beta, score)
+                if beta <= alpha:
+                    break
+            return minScore
