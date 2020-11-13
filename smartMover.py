@@ -18,6 +18,7 @@ class Player:
         B = 330
         R = 500
         Q = 900
+        K = 20,000
         wp = len(board.pieces(chess.PAWN, chess.WHITE))
         bp = len(board.pieces(chess.PAWN, chess.BLACK))
         wn = len(board.pieces(chess.KNIGHT, chess.WHITE))
@@ -28,7 +29,9 @@ class Player:
         br = len(board.pieces(chess.ROOK, chess.BLACK))
         wq = len(board.pieces(chess.QUEEN, chess.WHITE))
         bq = len(board.pieces(chess.QUEEN, chess.BLACK))
-        eval = P * (wp - bp) + N * (wn - bn) + B * (wb - bb) * R * (wr - br) + Q * (wq - bq)
+        wk = len(board.pieces(chess.KING, chess.WHITE))
+        bk = len(board.pieces(chess.KING, chess.BLACK)) 
+        eval = P * (wp - bp) + N * (wn - bn) + B * (wb - bb) * R * (wr - br) + Q * (wq - bq)+ K* (wk-bk) 
 
         #adapted from chess wikipedia page with piece square values
         pawntable = [
