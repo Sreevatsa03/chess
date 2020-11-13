@@ -2,22 +2,15 @@ import random
 import chess
 import time
 
-class Player:
 
+class Player:
+    depth = 3
     board = chess.Board()
     def __init__(self, board, color, time):
         pass
-    
+
     def move(self, board, time):
-        maxScore, bestMove = float("-inf"), None
-        for move in board.legal_moves:
-            copyBoard = board.copy()
-            copyBoard.push(move)
-            score = self.minimax(board, True, 1, float("-inf"), float("inf"))
-            if score >= maxScore:
-                maxScore = score
-                bestMove = move
-        return bestMove
+        return self.alBeMinMaxVal(board, 0, float("-inf"), float("inf"), True)[0]
 
     def evaluation(self, board):
         P = 100
@@ -98,18 +91,18 @@ class Player:
         -30,-40,-40,-50,-50,-40,-40,-30,
         -30,-40,-40,-50,-50,-40,-40,-30]
         pawnsq = sum([pawntable[i] for i in board.pieces(chess.PAWN, chess.WHITE)])
-        pawnsq= pawnsq + sum([-pawntable[chess.square_mirror(i)] for i in board.pieces(chess.PAWN, chess.BLACK)])
+        pawnsq = pawnsq + sum([-pawntable[chess.square_mirror(i)] for i in board.pieces(chess.PAWN, chess.BLACK)])
         knightsq = sum([knightstable[i] for i in board.pieces(chess.KNIGHT, chess.WHITE)])
         knightsq = knightsq + sum([-knightstable[chess.square_mirror(i)] for i in board.pieces(chess.KNIGHT, chess.BLACK)])
         bishopsq= sum([bishopstable[i] for i in board.pieces(chess.BISHOP, chess.WHITE)])
         bishopsq= bishopsq + sum([-bishopstable[chess.square_mirror(i)] for i in board.pieces(chess.BISHOP, chess.BLACK)])
-        rooksq = sum([rookstable[i] for i in board.pieces(chess.ROOK, chess.WHITE)]) 
+        rooksq = sum([rookstable[i] for i in board.pieces(chess.ROOK, chess.WHITE)])
         rooksq = rooksq + sum([-rookstable[chess.square_mirror(i)] for i in board.pieces(chess.ROOK, chess.BLACK)])
-        queensq = sum([queenstable[i] for i in board.pieces(chess.QUEEN, chess.WHITE)]) 
+        queensq = sum([queenstable[i] for i in board.pieces(chess.QUEEN, chess.WHITE)])
         queensq = queensq + sum([-queenstable[chess.square_mirror(i)] for i in board.pieces(chess.QUEEN, chess.BLACK)])
-        kingsq = sum([kingstable[i] for i in board.pieces(chess.KING, chess.WHITE)]) 
+        kingsq = sum([kingstable[i] for i in board.pieces(chess.KING, chess.WHITE)])
         kingsq = kingsq + sum([-kingstable[chess.square_mirror(i)] for i in board.pieces(chess.KING, chess.BLACK)])
-    
+
         eval += pawnsq + knightsq + bishopsq+ rooksq+ queensq + kingsq
         if board.is_checkmate():
             return -1e6
@@ -120,29 +113,38 @@ class Player:
                 return eval
             return -eval
 
-    def minimax(self, board, isMax, depth, alpha, beta):
-        if depth == 0:
+    def finalValueAlBeMinMax(self, board, depth, alpha, beta):
+        if depth is self.depth or not bool(board.legal_moves):
             return self.evaluation(board)
+        if depth % 2 == 0:
+            return self.alBeMinMaxVal(board, depth, alpha, beta, True)[1]
+        else:
+            return self.alBeMinMaxVal(board, depth, alpha, beta, False)[1]
 
+    def alBeMinMaxVal(self, board, depth, alpha, beta, isMax):
         if isMax:
-            maxScore, bestMove = float("-inf"), None
-            for move in board.legal_moves:
-                copyBoard = board.copy()
-                copyBoard.push(move)
-                score = self.minimax(copyBoard, not isMax, depth - 1, alpha, beta)
-                maxScore = max(score, maxScore)
-                alpha = max(alpha, score)
-                if beta <= alpha:
-                    break
-            return maxScore
-        else: 
-            minScore, bestMove = float("inf"), None
-            for move in board.legal_moves:
-                copyBoard = board.copy()
-                copyBoard.push(move)
-                score = self.minimax(copyBoard, isMax, depth - 1, alpha, beta)
-                minScore = min(score, minScore)
-                beta = min(beta, score)
-                if beta <= alpha:
-                    break
-            return minScore
+            bestAction = ("max", float("-inf"))
+        else:
+            bestAction = ("min", float("inf"))
+
+        moves = list(board.legal_moves)
+        for move in moves:
+            testBoard = board
+            board.push(move)
+            if isMax:
+                maxAction = (move, self.finalValueAlBeMinMax(testBoard, depth + 1, alpha, beta))
+                bestAction = max(bestAction, maxAction, key = lambda x:x[1])
+                testBoard.pop()
+                if bestAction[1] > beta:
+                    return bestAction
+                else:
+                    alpha = max(alpha, bestAction[1])
+            else:
+                minAction = (move, self.finalValueAlBeMinMax(testBoard, depth + 1, alpha, beta))
+                bestAction = min(bestAction, minAction, key = lambda x:x[1])
+                testBoard.pop()
+                if bestAction[1] < alpha:
+                    return bestAction
+                else:
+                    beta = min(beta, bestAction[1])
+        return bestAction
