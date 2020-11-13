@@ -151,3 +151,23 @@ class Player:
                 else:
                     beta = min(beta, bestAction[1])
         return bestAction
+    def quiescence (self, alpha, beta, board):
+        original= self.evaluation(board) #trivial starting point number that's returned in case no captures can be made
+        if (original>=beta):
+            return beta
+        if (original>alpha):
+            alpha=original
+        for move in board.legal_moves:
+            if board.is_capture(move):
+                board.push(move)
+                score = -quiescence(-beta, -alpha)
+                board.pop()
+
+                if (score>=beta):
+                    return beta
+                if (score > alpha):
+                    alpha=score
+        return alpha
+
+        
+
