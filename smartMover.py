@@ -4,13 +4,13 @@ import time
 
 
 class Player:
-    depth = 2
+    depth = 3
     board = chess.Board()
     def __init__(self, board, color, time):
         pass
 
     def move(self, board, time):
-        return self.alBeMinMaxVal(board, 0, float("-inf"), float("inf"), True)[0]
+        return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]
 
     def evaluation(self, board):
         P = 100
