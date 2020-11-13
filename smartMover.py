@@ -4,7 +4,7 @@ import time
 
 
 class Player:
-    depth = 3
+    depth = 2
     board = chess.Board()
     def __init__(self, board, color, time):
         pass
@@ -115,11 +115,11 @@ class Player:
 
     def finalValueAlBeMinMax(self, board, depth, alpha, beta):
         if depth is self.depth or not bool(board.legal_moves):
-            return self.evaluation(board)
+            return -self.evaluation(board)
         if depth % 2 == 0:
-            return self.alBeMinMaxVal(board, depth, alpha, beta, True)[1]
+            return self.alBeMinMaxVal(board, depth + 1, alpha, beta, True)[1]
         else:
-            return self.alBeMinMaxVal(board, depth, alpha, beta, False)[1]
+            return self.alBeMinMaxVal(board, depth + 1, alpha, beta, False)[1]
 
     def alBeMinMaxVal(self, board, depth, alpha, beta, isMax):
         if isMax:
@@ -132,7 +132,7 @@ class Player:
             testBoard = board
             board.push(move)
             if isMax:
-                maxAction = (move, self.finalValueAlBeMinMax(testBoard, depth + 1, alpha, beta))
+                maxAction = (move, self.finalValueAlBeMinMax(testBoard, depth, alpha, beta))
                 bestAction = max(bestAction, maxAction, key = lambda x:x[1])
                 testBoard.pop()
                 if bestAction[1] > beta:
@@ -140,7 +140,7 @@ class Player:
                 else:
                     alpha = max(alpha, bestAction[1])
             else:
-                minAction = (move, self.finalValueAlBeMinMax(testBoard, depth + 1, alpha, beta))
+                minAction = (move, self.finalValueAlBeMinMax(testBoard, depth, alpha, beta))
                 bestAction = min(bestAction, minAction, key = lambda x:x[1])
                 testBoard.pop()
                 if bestAction[1] < alpha:
