@@ -120,7 +120,7 @@ class Player:
     def finalValueAlBeMinMax(self, board, depth, alpha, beta):
         if depth is self.depth or not bool(board.legal_moves):
             if board.is_capture(board.peek()) or board.is_check():
-                return self.quiescence(alpha, beta, board)
+                return self.quiescence(board, depth, alpha, beta)
             return -self.evaluation(board)
         if depth % 2 == 0:
             return self.alBeMinMaxVal(board, depth + 1, alpha, beta, True)[1]
@@ -154,23 +154,23 @@ class Player:
                 else:
                     beta = min(beta, bestAction[1])
         return bestAction
-    def quiescence(self, alpha, beta, board):
+    def quiescence(self, board, depth, alpha, beta):
+        if board.is_checkmate():
+            return -self.evaluation(board)
         original = self.evaluation(board) #trivial starting point number that's returned in case no captures can be made
         if original >= beta:
             return beta
-        if original > alpha:
+        if alpha < original:
             alpha = original
-        for move in board.legal_moves:
-            if board.is_capture(move):
+        if depth is self.depth:
+            captureMoves = (move for move in board.generate_legal_moves() if (board.is_capture(move) or board.is_check()))
+            for move in captureMoves:
                 board.push(move)
-                score = -self.quiescence(-beta, -alpha, board)
+                score = -self.quiescence(board, depth + 1, -beta, -alpha)
                 board.pop()
 
                 if score >= beta:
-                    return beta
+                    return score
                 if score > alpha:
                     alpha = score
         return alpha
-
-        
-
