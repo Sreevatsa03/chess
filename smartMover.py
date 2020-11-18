@@ -162,7 +162,7 @@ class Player:
             return beta
         if alpha < original:
             alpha = original
-        if depth is self.depth:
+        if depth is not self.depth:
             captureMoves = (move for move in board.generate_legal_moves() if (board.is_capture(move) or board.is_check()))
             for move in captureMoves:
                 board.push(move)
