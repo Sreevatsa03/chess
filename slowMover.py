@@ -9,3 +9,6 @@ class Player:
     def move(self, board, t):
         time.sleep(random.random())
         return random.choice(list(board.legal_moves))
+
+    def moverType(self):
+        return False

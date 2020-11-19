@@ -10,6 +10,9 @@ class Player:
     def __init__(self, board, color, time):
         pass
 
+    def moverType(self):
+        return False
+
     def move(self, board, time):
         '''
         Alpha-beta pruning minimax

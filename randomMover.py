@@ -7,3 +7,6 @@ class Player:
     
     def move(self, board, time):
         return random.choice(list(board.legal_moves))
+
+    def moverType(self):
+        return False

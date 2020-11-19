@@ -9,6 +9,7 @@ class Player:
         pass
 
     def move(self, board):
+        print("\nLegal moves: " )
         for i in board.legal_moves:
             print(i.uci() + " ")
         while(True):
@@ -21,3 +22,6 @@ class Player:
                     print("what, is sree playing or something?")
             except:
                 print("not recognized as a move you dummy")
+
+    def moverType(self):
+        return True
