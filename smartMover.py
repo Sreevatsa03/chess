@@ -5,39 +5,30 @@ import numpy as np
 
 
 class Player:
-    depth = 2
+    depth = 3
     board = chess.Board()
     def __init__(self, board, color, time):
-        pass
+        self.time = time
 
     def moverType(self):
         return False
 
     def move(self, board, time):
-        '''
-        Alpha-beta pruning minimax
-        '''
-        # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]        
-
-        '''
-        Negamax with quiescence
-        '''
-
-        depth = 3
-        bestMove = chess.Move.null()
-        bestValue = float("-inf")
+        # Negamax with quiescence
         alpha = float("-inf")
         beta = float("inf")
-        for move in board.legal_moves:
-            board.push(move)
-            value = -self.negamax(board, -beta, -alpha, depth - 1)
-            if value > bestValue:
-                bestValue = value
-                bestMove = move
-            if value > alpha:
-                alpha = value
-            board.pop()
-        return bestMove
+        return self.negaMaxRoot(board, alpha, beta, self.depth)
+        
+
+        # Alpha-beta pruning minimax
+        # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]        
+
+    # def iterativeDeepening(board, time):
+    #     finalTime = time() + 10
+    #     while initialTime < time() and abs(value) < 50000:
+    #         bestMove, value = negaMaxRoot(board, depth, -inf, inf, color, depth)
+    #         depth += 1
+    #     return bestMove, value, 0
 
     def evaluation(self, board):
         P = 100
@@ -179,13 +170,27 @@ class Player:
                     beta = min(beta, bestAction[1])
         return bestAction
 
-    def negamax(self, board, alpha, beta, depth):
+    def negaMaxRoot(self, board, alpha, beta, depth):
+        bestMove = chess.Move.null()
+        bestValue = float("-inf")
+        for move in board.legal_moves:
+            board.push(move)
+            value = -self.negaMax(board, -beta, -alpha, depth - 1)
+            if value > bestValue:
+                bestValue = value
+                bestMove = move
+            if value > alpha:
+                alpha = value
+            board.pop()
+        return bestMove
+
+    def negaMax(self, board, alpha, beta, depth):
         bestScore = float("-inf")
         if depth == 0:
             return self.quiescence(board, alpha, beta)
         for move in board.legal_moves:
             board.push(move)
-            score = -self.negamax(board, -beta, -alpha, depth - 1)
+            score = -self.negaMax(board, -beta, -alpha, depth - 1)
             board.pop()
             if score >= beta:
                 return score

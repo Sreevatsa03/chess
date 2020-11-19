@@ -1,10 +1,11 @@
 import chess
 import chess.pgn
 import time
-import humanMover as player1
-import smartMover as player2
+import smartMover as player1
+import randomMover as player2
 
 game = chess.pgn.Game()
+node = game
 board = chess.Board()
 board1 = board.copy()
 board2 = board.copy()
@@ -36,8 +37,13 @@ while p1_time>0 and p2_time>0 and not board.is_game_over() and legal_move:
             p1_time -= end-start
             if move in board.legal_moves:
                 board.push(move)
-                print("\nOpponent's move: ")
-                print(move)
+                node = node.add_variation(move)
+                if p2.moverType() == True:
+                    print("\nOpponent's move: ")
+                    print(move)
+            else:
+                legal_move = False
+
     else:
         if p2.moverType() == True:
             move = p2.move(board_copy)
@@ -49,8 +55,12 @@ while p1_time>0 and p2_time>0 and not board.is_game_over() and legal_move:
             p2_time -= end-start
             if move in board.legal_moves:
                 board.push(move)
-                print("\nOpponent's move: ")
-                print(move)
+                node = node.add_variation(move)
+                if p1.moverType() == True:
+                    print("\nOpponent's move: ")
+                    print(move)
+            else:
+                legal_move = False
 
 if not legal_move:
     if board.turn == chess.WHITE:
