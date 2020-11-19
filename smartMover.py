@@ -8,27 +8,27 @@ class Player:
     depth = 3
     board = chess.Board()
     def __init__(self, board, color, time):
-        self.time = time
+        pass
 
     def moverType(self):
         return False
 
     def move(self, board, time):
         # Negamax with quiescence
-        alpha = float("-inf")
-        beta = float("inf")
-        return self.negaMaxRoot(board, alpha, beta, self.depth)
+        # alpha = float("-inf")
+        # beta = float("inf")
+        # return self.negaMaxRoot(board, alpha, beta, self.depth)
         
+        return self.iterativeDeepening(board, self.depth - 1)
 
         # Alpha-beta pruning minimax
         # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]        
 
-    # def iterativeDeepening(board, time):
-    #     finalTime = time() + 10
-    #     while initialTime < time() and abs(value) < 50000:
-    #         bestMove, value = negaMaxRoot(board, depth, -inf, inf, color, depth)
-    #         depth += 1
-    #     return bestMove, value, 0
+    def iterativeDeepening(self, board, depth):
+        bestMove = self.negaMaxRoot(board, float("-inf"), float("inf"), 1)
+        for i in range(1, depth + 1):
+            bestMove = self.negaMaxRoot(board, float("-inf"), float("inf"), i)
+        return bestMove
 
     def evaluation(self, board):
         P = 100
