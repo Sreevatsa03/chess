@@ -2,7 +2,7 @@ import chess
 import chess.pgn
 import time
 import smartMover as player1
-import randomMover as player2
+import slowMover as player2
 
 game = chess.pgn.Game()
 node = game

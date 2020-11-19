@@ -11,7 +11,21 @@ class Player:
         pass
 
     def move(self, board, time):
-        return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]
+        # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]
+        bestMove = None
+        bestValue = float("-inf")
+        alpha = float("-inf")
+        beta = float("inf")
+        for move in board.legal_moves:
+            board.push(move)
+            value = -self.negamax(board, -beta, -alpha, 2)
+            if value > bestValue:
+                bestValue = value
+                bestMove = move
+            if value > alpha:
+                alpha = value
+            board.pop()
+        return bestMove
 
     def evaluation(self, board):
         P = 100
@@ -32,7 +46,7 @@ class Player:
         bq = len(board.pieces(chess.QUEEN, chess.BLACK))
         wk = len(board.pieces(chess.KING, chess.WHITE))
         bk = len(board.pieces(chess.KING, chess.BLACK)) 
-        eval = P * (wp - bp) + N * (wn - bn) + B * (wb - bb) * R * (wr - br) + Q * (wq - bq) + K * (wk - bk) 
+        eval = float(P * (wp - bp) + N * (wn - bn) + B * (wb - bb) * R * (wr - br) + Q * (wq - bq) + K * (wk - bk)) 
 
         #adapted from chess wikipedia page with piece square values
         pawntable = np.array([
@@ -107,7 +121,7 @@ class Player:
         kingsq = sum([kingstable[i] for i in board.pieces(chess.KING, chess.WHITE)])
         kingsq = kingsq + sum([-kingstable[chess.square_mirror(i)] for i in board.pieces(chess.KING, chess.BLACK)])
 
-        eval += pawnsq + knightsq + bishopsq+ rooksq+ queensq + kingsq
+        eval += pawnsq + knightsq + bishopsq+ rooksq + 1.5 * queensq + 10.0 *kingsq
         if board.is_checkmate():
             return -1e6
         elif board.is_stalemate():
@@ -119,8 +133,8 @@ class Player:
 
     def finalValueAlBeMinMax(self, board, depth, alpha, beta):
         if depth is self.depth or not bool(board.legal_moves):
-            if board.is_capture(board.peek()) or board.is_check():
-                return self.quiescence(board, depth, alpha, beta)
+            # if board.is_capture(board.peek()) or board.is_check():
+            #     return self.quiescence(board, alpha, beta)
             return -self.evaluation(board)
         if depth % 2 == 0:
             return self.alBeMinMaxVal(board, depth + 1, alpha, beta, True)[1]
@@ -154,23 +168,36 @@ class Player:
                 else:
                     beta = min(beta, bestAction[1])
         return bestAction
-    def quiescence(self, board, depth, alpha, beta):
-        if board.is_checkmate():
-            return -self.evaluation(board)
-        original = self.evaluation(board) #trivial starting point number that's returned in case no captures can be made
-        if original >= beta:
-            return beta
-        if alpha < original:
-            alpha = original
-        if depth is not self.depth:
-            captureMoves = (move for move in board.generate_legal_moves() if (board.is_capture(move) or board.is_check()))
-            for move in captureMoves:
-                board.push(move)
-                score = -self.quiescence(board, depth + 1, -beta, -alpha)
-                board.pop()
 
+    def negamax(self, board, alpha, beta, depth):
+        bestScore = float("-inf")
+        if depth == 0:
+            return self.quiescence(board, alpha, beta)
+        for move in board.legal_moves:
+            board.push(move)
+            score = -self.negamax(board, -beta, -alpha, depth - 1)
+            board.pop()
+            if score >= beta:
+                return score
+            if score > bestScore:
+                bestScore = score
+            if score > alpha:
+                alpha = score
+        return bestScore 
+
+    def quiescence(self, board, alpha, beta):
+        standPat = self.evaluation(board) #trivial starting point number that's returned in case no captures can be made
+        if standPat >= beta:
+            return beta
+        if alpha < standPat:
+            alpha = standPat
+        for move in board.legal_moves:
+            if board.is_capture(move):
+                board.push(move)
+                score = -self.quiescence(board, -beta, -alpha)
+                board.pop()
                 if score >= beta:
-                    return score
+                    return beta
                 if score > alpha:
                     alpha = score
         return alpha
