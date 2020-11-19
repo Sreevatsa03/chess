@@ -5,7 +5,6 @@ import humanMover as player1
 import smartMover as player2
 
 game = chess.pgn.Game()
-node = game
 board = chess.Board()
 board1 = board.copy()
 board2 = board.copy()
@@ -52,11 +51,6 @@ while p1_time>0 and p2_time>0 and not board.is_game_over() and legal_move:
                 board.push(move)
                 print("\nOpponent's move: ")
                 print(move)
-
-    # if move in board.legal_moves:
-    #     board.push(move)
-    #     node = node.add_variation(move)
-    #     legal_move = False
 
 if not legal_move:
     if board.turn == chess.WHITE:
