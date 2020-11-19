@@ -121,7 +121,7 @@ class Player:
         kingsq = sum([kingstable[i] for i in board.pieces(chess.KING, chess.WHITE)])
         kingsq = kingsq + sum([-kingstable[chess.square_mirror(i)] for i in board.pieces(chess.KING, chess.BLACK)])
 
-        eval += pawnsq + knightsq + bishopsq+ rooksq + 1.5 * queensq + 10.0 *kingsq
+        eval += pawnsq + knightsq + bishopsq+ rooksq + 1.5 * queensq + 10.0 * kingsq
         if board.is_checkmate():
             return -1e6
         elif board.is_stalemate():
