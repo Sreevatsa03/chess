@@ -5,20 +5,21 @@ import numpy as np
 
 
 class Player:
-    depth = 3
+    depth = 2
     board = chess.Board()
     def __init__(self, board, color, time):
         pass
 
     def move(self, board, time):
         # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]
-        bestMove = None
+        depth = 3
+        bestMove = chess.Move.null()
         bestValue = float("-inf")
         alpha = float("-inf")
         beta = float("inf")
         for move in board.legal_moves:
             board.push(move)
-            value = -self.negamax(board, -beta, -alpha, 2)
+            value = -self.negamax(board, -beta, -alpha, depth - 1)
             if value > bestValue:
                 bestValue = value
                 bestMove = move
@@ -121,7 +122,7 @@ class Player:
         kingsq = sum([kingstable[i] for i in board.pieces(chess.KING, chess.WHITE)])
         kingsq = kingsq + sum([-kingstable[chess.square_mirror(i)] for i in board.pieces(chess.KING, chess.BLACK)])
 
-        eval += pawnsq + knightsq + bishopsq+ rooksq + 1.5 * queensq + 10.0 * kingsq
+        eval += pawnsq + knightsq + bishopsq+ rooksq + queensq + kingsq
         if board.is_checkmate():
             return -1e6
         elif board.is_stalemate():
