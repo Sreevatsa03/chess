@@ -2,7 +2,7 @@ import chess
 import chess.pgn
 import time
 import smartMover as player1
-import randomMover as player2
+import humanMover as player2
 
 game = chess.pgn.Game()
 node = game
@@ -32,11 +32,8 @@ while p1_time>0 and p2_time>0 and not board.is_game_over() and legal_move:
         end = time.time()
         p1_time -= end-start
     else:
-        start = time.time()
-        move = p2.move(board_copy,p2_time)
-        end = time.time()
-        p2_time -= end-start
-    
+        move = p2.move(board_copy)
+
     if move in board.legal_moves:
         board.push(move)
         node = node.add_variation(move)
