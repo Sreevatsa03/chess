@@ -11,7 +11,15 @@ class Player:
         pass
 
     def move(self, board, time):
-        # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]
+        '''
+        Alpha-beta pruning minimax
+        '''
+        # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]        
+
+        '''
+        Negamax with quiescence
+        '''
+
         depth = 3
         bestMove = chess.Move.null()
         bestValue = float("-inf")
@@ -134,8 +142,6 @@ class Player:
 
     def finalValueAlBeMinMax(self, board, depth, alpha, beta):
         if depth is self.depth or not bool(board.legal_moves):
-            # if board.is_capture(board.peek()) or board.is_check():
-            #     return self.quiescence(board, alpha, beta)
             return -self.evaluation(board)
         if depth % 2 == 0:
             return self.alBeMinMaxVal(board, depth + 1, alpha, beta, True)[1]
@@ -187,7 +193,7 @@ class Player:
         return bestScore 
 
     def quiescence(self, board, alpha, beta):
-        standPat = self.evaluation(board) #trivial starting point number that's returned in case no captures can be made
+        standPat = self.evaluation(board) 
         if standPat >= beta:
             return beta
         if alpha < standPat:
