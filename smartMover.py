@@ -31,6 +31,7 @@ class Player:
         return bestMove
 
     def evaluation(self, board):
+        # weights adapted from chess wikipedia page 
         P = 100
         N = 320
         B = 330
@@ -111,6 +112,7 @@ class Player:
         -30,-40,-40,-50,-50,-40,-40,-30,
         -30,-40,-40,-50,-50,-40,-40,-30,
         -30,-40,-40,-50,-50,-40,-40,-30])
+        
         pawnsq = sum([pawntable[i] for i in board.pieces(chess.PAWN, chess.WHITE)])
         pawnsq = pawnsq + sum([-pawntable[chess.square_mirror(i)] for i in board.pieces(chess.PAWN, chess.BLACK)])
         knightsq = sum([knightstable[i] for i in board.pieces(chess.KNIGHT, chess.WHITE)])
