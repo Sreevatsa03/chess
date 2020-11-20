@@ -14,4 +14,4 @@
 >
 > - **toast**: fearlessly led the team, more of an ideas man, didn't really write the code but all of it basically came from his brain or something, minimax, human input
 > - **sree**: wrote all of the code, was the prophet to toast's god, negamax, minimax, abPruning
-> - **surya**: eval function, weighting, fancier eval, receptionist and morale booster
+> - **surya**: eval function, weighting, fancier eval, quiescence, receptionist and morale booster
