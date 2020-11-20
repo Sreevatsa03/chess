@@ -18,11 +18,11 @@ class Player:
         # alpha = float("-inf")
         # beta = float("inf")
         # return self.negaMaxRoot(board, alpha, beta, self.depth)
-        
+
         return self.iterativeDeepening(board, self.depth - 1)
 
         # Alpha-beta pruning minimax
-        # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]        
+        # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]
 
     def iterativeDeepening(self, board, depth):
         bestMove = self.negaMaxRoot(board, float("-inf"), float("inf"), 1)
@@ -48,8 +48,8 @@ class Player:
         wq = len(board.pieces(chess.QUEEN, chess.WHITE))
         bq = len(board.pieces(chess.QUEEN, chess.BLACK))
         wk = len(board.pieces(chess.KING, chess.WHITE))
-        bk = len(board.pieces(chess.KING, chess.BLACK)) 
-        eval = float(P * (wp - bp) + N * (wn - bn) + B * (wb - bb) * R * (wr - br) + Q * (wq - bq) + K * (wk - bk)) 
+        bk = len(board.pieces(chess.KING, chess.BLACK))
+        eval = float(P * (wp - bp) + N * (wn - bn) + B * (wb - bb) * R * (wr - br) + Q * (wq - bq) + K * (wk - bk))
 
         #adapted from chess wikipedia page with piece square values
         pawntable = np.array([
@@ -188,7 +188,8 @@ class Player:
         bestScore = float("-inf")
         if depth == 0:
             return self.quiescence(board, alpha, beta)
-        for move in board.legal_moves:
+        legals = self.sortMoves(board)
+        for move in legals:
             board.push(move)
             score = -self.negaMax(board, -beta, -alpha, depth - 1)
             board.pop()
@@ -198,10 +199,10 @@ class Player:
                 bestScore = score
             if score > alpha:
                 alpha = score
-        return bestScore 
+        return bestScore
 
     def quiescence(self, board, alpha, beta):
-        standPat = self.evaluation(board) 
+        standPat = self.evaluation(board)
         if standPat >= beta:
             return beta
         if alpha < standPat:
@@ -216,3 +217,65 @@ class Player:
                 if score > alpha:
                     alpha = score
         return alpha
+
+    def attackedByInferior(self, board, move, sqr):
+        m = board.san(move)
+        for square in board.attackers(not board.turn, sqr):
+            piece = board.piece_type_at(square)
+            if m[0] in 'BN' and piece == chess.PAWN:
+                return True
+            elif m[0] == 'R' and (piece == chess.PAWN or piece == chess.BISHOP or piece == chess.KNIGHT):
+                return True
+            elif m[0] == 'Q' and (piece == chess.PAWN or piece == chess.BISHOP or piece == chess.KNIGHT or piece == chess.ROOK):
+                return True
+        return False
+
+    def numDefToSqr(self, board, move):
+        return len(board.attackers(board.turn, move.to_square))
+
+    def numAtkToSqr(self, board, move):
+        return len(board.attackers(not board.turn, move.to_square))
+
+    def sortMoves(self, board):
+        legals = []
+        postSmart = 0
+        for move in board.legal_moves:
+            m = board.san(move)
+            if m[-1] == '#':
+                return [move]
+            if 'x' in m:
+                if m[0].islower():
+                    legals.insert(0, move)
+                    postSmart += 1
+                    continue
+                elif not board.is_attacked_by(not board.turn, move.to_square):
+                    legals.insert(0, move)
+                    postSmart += 1
+                    continue
+                else:
+                    legals.insert(postSmart, move)
+                    continue
+            if m[0] == 'Q':
+                if board.is_attacked_by(not board.turn, move.to_square):
+                    legals.append(move)
+                    continue
+                else:
+                    legals.insert(postSmart, move)
+                    continue
+            elif self.attackedByInferior(board, move, move.from_square):
+                if self.attackedByInferior(board, move, move.to_square):
+                    legals.append(move)
+                    continue
+                else:
+                    if self.numDefToSqr(board, move) >= self.numAtkToSqr(board, move):
+                        legals.insert(0, move)
+                        postSmart += 1
+                        continue
+                    else:
+                        legals.append(move)
+                        continue
+            elif self.attackedByInferior(board, move, move.to_square):
+                legals.append(move)
+                continue
+            legals.insert(postSmart, move)
+        return legals
