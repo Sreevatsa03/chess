@@ -2,15 +2,15 @@ import chess
 import chess.pgn
 import time
 import smartMover as player1
-import randomMover as player2
+import dumbMover as player2
 
 game = chess.pgn.Game()
 node = game
 board = chess.Board()
 board1 = board.copy()
 board2 = board.copy()
-p1_time = 60
-p2_time = 60
+p1_time = 1000
+p2_time = 1000
 
 start = time.time()
 p1 = player1.Player(board1,chess.WHITE,p1_time)

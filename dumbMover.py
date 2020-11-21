@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Player:
-    depth = 3
+    depth = 2
     board = chess.Board()
     def __init__(self, board, color, time):
         pass
@@ -23,7 +23,7 @@ class Player:
         # return self.negaMaxRoot(board, alpha, beta, self.depth)
 
         # Alpha-beta pruning miniMax
-        # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]        
+        # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]
 
     def iterativeDeepening(self, board, depth):
         bestMove = self.negaMaxRoot(board, float("-inf"), float("inf"), 1)
@@ -49,8 +49,8 @@ class Player:
         wq = len(board.pieces(chess.QUEEN, chess.WHITE))
         bq = len(board.pieces(chess.QUEEN, chess.BLACK))
         wk = len(board.pieces(chess.KING, chess.WHITE))
-        bk = len(board.pieces(chess.KING, chess.BLACK)) 
-        eval = float(P * (wp - bp) + N * (wn - bn) + B * (wb - bb) * R * (wr - br) + Q * (wq - bq) + K * (wk - bk)) 
+        bk = len(board.pieces(chess.KING, chess.BLACK))
+        eval = float(P * (wp - bp) + N * (wn - bn) + B * (wb - bb) * R * (wr - br) + Q * (wq - bq) + K * (wk - bk))
 
         #adapted from chess wikipedia page with piece square values
         pawntable = np.array([
@@ -199,10 +199,10 @@ class Player:
                 bestScore = score
             if score > alpha:
                 alpha = score
-        return bestScore 
+        return bestScore
 
     def quiescence(self, board, alpha, beta):
-        standPat = self.evaluation(board) 
+        standPat = self.evaluation(board)
         if standPat >= beta:
             return beta
         if alpha < standPat:
