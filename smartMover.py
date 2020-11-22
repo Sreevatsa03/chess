@@ -14,12 +14,13 @@ class Player:
         return False
 
     def move(self, board, time):
+        # Iterative deepening negMax
+        return self.iterativeDeepening(board, self.depth - 1)
+
         # Negamax with quiescence
         # alpha = float("-inf")
         # beta = float("inf")
         # return self.negaMaxRoot(board, alpha, beta, self.depth)
-
-        return self.iterativeDeepening(board, self.depth - 1)
 
         # Alpha-beta pruning minimax
         # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]
@@ -202,6 +203,38 @@ class Player:
             if score > alpha:
                 alpha = score
         return bestScore
+
+    def pvSearch(self, board, alpha, beta, depth):
+        if depth == 0:
+            return self.quiescence(board, alpha, beta)
+        bSearchPv = True
+        legals = self.sortMoves(board)
+        for move in legals:
+            board.push(move)
+            if bSearchPv:
+                score = -self.pvSearch(board, -beta, -alpha, depth - 1)
+            else:
+                score = self.zwSearch(board, -alpha, depth - 1, legals)
+                if score > alpha:
+                    score = -self.pvSearch(board, -beta, -alpha, depth - 1)
+            board.pop(move)
+            if score >= beta:
+                return beta
+            if score > alpha:
+                alpha = score
+            bSearchPv = False
+        return alpha
+
+    def zwSearch(self, board, beta, depth, moves):
+        if depth == 0:
+            return self.quiescence(beta - 1, beta)
+        for move in moves:
+            board.push(move)
+            score = -self.zwSearch(1 - beta, depth - 1)
+            board.pop(move)
+            if score >= beta:
+                return beta
+        return beta - 1
 
     def quiescence(self, board, alpha, beta):
         standPat = self.evaluation(board)
