@@ -14,5 +14,5 @@
 > ## da homies
 >
 > - **toast**: fearlessly led the team, more of an ideas man, didn't really write the code but all of it basically came from his brain or something, minimax, human input, sorting
-> - **sree**: wrote most of the code, was the prophet to toast's god, negamax, minimax, abPruning
+> - **sree**: wrote most of the code(every search a.k.a. the stuff that wins us games), was the prophet to toast's god, pvSearch with fail-hard zero-window, negamax, minimax, abPruning
 > - **surya**: eval function, weighting, fancier eval, quiescence, receptionist and morale booster
