@@ -1,6 +1,7 @@
 import random
 import chess
 import time
+import chess.polyglot
 import numpy as np
 
 
@@ -14,16 +15,22 @@ class Player:
         return False
 
     def move(self, board, time):
-        # Iterative deepening negMax
-        return self.iterativeDeepening(board, self.depth - 1)
+        # Iterative deepening
+        try:
+            return chess.polyglot.MemoryMappedReader("poly16/books/elo-3300.bin").weighted_choice(board).move()
+        except:
+            return self.iterativeDeepening(board, self.depth - 1)
 
-        # Negamax with quiescence
-        # alpha = float("-inf")
-        # beta = float("inf")
-        # return self.negaMaxRoot(board, alpha, beta, self.depth)
+            # PVS with ZWS
+            # return self.pvSearchRoot(board, alpha, beta, self.depth)
 
-        # Alpha-beta pruning minimax
-        # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]
+            # Negamax with quiescence
+            # alpha = float("-inf")
+            # beta = float("inf")
+            # return self.negaMaxRoot(board, alpha, beta, self.depth)
+
+            # Alpha-beta pruning minimax
+            # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]
 
     def iterativeDeepening(self, board, depth):
         bestMove = self.pvSearchRoot(board, float("-inf"), float("inf"), 1)
