@@ -17,7 +17,7 @@ class Player:
     def move(self, board, time):
         # Iterative deepening
         try:
-            return chess.polyglot.MemoryMappedReader("poly16/books/elo-3300.bin").weighted_choice(board).move()
+            return chess.polyglot.MemoryMappedReader("books/elo-3300.bin").weighted_choice(board).move()
         except:
             # Iterative deepening
             return self.iterativeDeepening(board, self.depth, True)
