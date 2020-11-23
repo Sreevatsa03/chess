@@ -19,24 +19,30 @@ class Player:
         try:
             return chess.polyglot.MemoryMappedReader("poly16/books/elo-3300.bin").weighted_choice(board).move()
         except:
-            return self.iterativeDeepening(board, self.depth - 1)
+            # Iterative deepening
+            return self.iterativeDeepening(board, self.depth, True)
 
             # PVS with ZWS
-            # return self.pvSearchRoot(board, alpha, beta, self.depth)
+            # return self.pvSearchRoot(board, float("-inf"), float("inf"), self.depth - 1)
 
             # Negamax with quiescence
-            # alpha = float("-inf")
-            # beta = float("inf")
-            # return self.negaMaxRoot(board, alpha, beta, self.depth)
+            # return self.negaMaxRoot(board, float("-inf"), float("inf"), self.depth)
 
             # Alpha-beta pruning minimax
             # return self.alBeMinMaxVal(board, 1, float("-inf"), float("inf"), True)[0]
 
-    def iterativeDeepening(self, board, depth):
-        bestMove = self.pvSearchRoot(board, float("-inf"), float("inf"), 1)
-        for i in range(1, depth + 1):
-            bestMove = self.pvSearchRoot(board, float("-inf"), float("inf"), i)
-        return bestMove
+    def iterativeDeepening(self, board, depth, pN):
+        if pN:
+            depth = depth - 1
+            bestMove = self.pvSearchRoot(board, float("-inf"), float("inf"), 1)
+            for i in range(1, depth + 1):
+                bestMove = self.pvSearchRoot(board, float("-inf"), float("inf"), i)
+            return bestMove
+        else:
+            bestMove = self.negaMaxRoot(board, float("-inf"), float("inf"), 1)
+            for i in range(1, depth + 1):
+                bestMove = self.negaMaxRoot(board, float("-inf"), float("inf"), i)
+            return bestMove
 
     def evaluation(self, board):
         # weights adapted from chess wikipedia page 
