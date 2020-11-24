@@ -6,7 +6,7 @@ import numpy as np
 
 
 class Player:
-    depth = 3
+    depth = 4
     board = chess.Board()
     def __init__(self, board, color, time):
         pass
@@ -20,7 +20,7 @@ class Player:
             return chess.polyglot.MemoryMappedReader("books/elo-3300.bin").weighted_choice(board).move()
         except:
             # Iterative deepening
-            return self.iterativeDeepening(board, self.depth, True)
+            return self.iterativeDeepening(board, self.depth, False)
 
             # PVS with ZWS
             # return self.pvSearchRoot(board, float("-inf"), float("inf"), self.depth - 1)
