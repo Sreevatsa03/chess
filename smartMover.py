@@ -16,11 +16,11 @@ class Player:
 
     def move(self, board, time):
         # Iterative deepening
-        try:
-            return chess.polyglot.MemoryMappedReader("books/elo-3300.bin").weighted_choice(board).move()
-        except:
+#         try:
+#             return chess.polyglot.MemoryMappedReader("books/elo-3300.bin").weighted_choice(board).move()
+#         except:
             # Iterative deepening
-            return self.iterativeDeepening(board, self.depth, True)
+        return self.iterativeDeepening(board, self.depth, True)
 
             # PVS with ZWS
             # return self.pvSearchRoot(board, float("-inf"), float("inf"), self.depth - 1)
