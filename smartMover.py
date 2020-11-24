@@ -20,7 +20,7 @@ class Player:
             return chess.polyglot.MemoryMappedReader("books/elo-3300.bin").weighted_choice(board).move()
         except:
             # Iterative deepening
-            return self.iterativeDeepening(board, self.depth, False)
+            return self.iterativeDeepening(board, self.depth, True)
 
             # PVS with ZWS
             # return self.pvSearchRoot(board, float("-inf"), float("inf"), self.depth - 1)
