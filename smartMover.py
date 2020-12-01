@@ -6,7 +6,7 @@ import numpy as np
 
 
 class Player:
-    depth = 4
+    depth = 3
     board = chess.Board()
     def __init__(self, board, color, time):
         pass
