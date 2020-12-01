@@ -6,7 +6,7 @@ import numpy as np
 
 
 class Player:
-    depth = 3
+    depth = 4
     board = chess.Board()
     def __init__(self, board, color, time):
         pass
@@ -20,7 +20,7 @@ class Player:
 #             return chess.polyglot.MemoryMappedReader("books/elo-3300.bin").weighted_choice(board).move()
 #         except:
             # Iterative deepening
-        return self.iterativeDeepening(board, self.depth, True)
+        return self.iterativeDeepening(board, self.depth, False)
 
             # PVS with ZWS
             # return self.pvSearchRoot(board, float("-inf"), float("inf"), self.depth - 1)
@@ -45,7 +45,7 @@ class Player:
             return bestMove
 
     def evaluation(self, board):
-        # weights adapted from chess wikipedia page 
+        # weights adapted from chess wikipedia page
         P = 100
         N = 320
         B = 330
@@ -126,7 +126,7 @@ class Player:
         -30,-40,-40,-50,-50,-40,-40,-30,
         -30,-40,-40,-50,-50,-40,-40,-30,
         -30,-40,-40,-50,-50,-40,-40,-30])
-        
+
         pawnsq = sum([pawntable[i] for i in board.pieces(chess.PAWN, chess.WHITE)])
         pawnsq = pawnsq + sum([-pawntable[chess.square_mirror(i)] for i in board.pieces(chess.PAWN, chess.BLACK)])
         knightsq = sum([knightstable[i] for i in board.pieces(chess.KNIGHT, chess.WHITE)])
